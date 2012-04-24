@@ -49,9 +49,8 @@ To add the <cloud> namespace to your application context files, you need to decl
 
 ### Available namespace elements
 
-#### <cloud:data-source>
-<cloud:data-source>
-The <cloud:data-source> element provides a convenient way to configure the JDBC DataSource for your Spring application.
+#### \<cloud:data-source\>
+The \<cloud:data-source\> element provides a convenient way to configure the JDBC DataSource for your Spring application.
 Basic attributes:
 id – defaults to service name
 service-name – only needed if you have multiple relational database services bound to the app
