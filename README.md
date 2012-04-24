@@ -41,11 +41,11 @@ If you don't care to use the cloud namespace, you can still take advantage of th
 Here is an example that creates a connection to a Mongo service named "my-mongo":
 ```java
 CloudEnvironment environment = new CloudEnvironment();
-MongoDbFactory mongo = new MongoServiceCreator().createService(environment.getService(MongoServiceInfo.class))
+MongoDbFactory mongo = new MongoServiceCreator().createService(environment.getService("my-mongo",MongoServiceInfo.class))
 ```
 
 ## Using the \<cloud\> namespace in Spring applications
-To add the \<cloud\> namespace to your application context files, you need to declare the namespace (line 5) and also provide the schema location (line 8). Once this is declared, you can use the \<cloud\> namespace elements(line 10). Here is the complete example:
+To add the \<cloud\> namespace to your application context files, you need to declare the namespace and also provide the schema location. Once this is declared, you can use the \<cloud\> namespace elements. Here is the complete example:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -71,9 +71,10 @@ To add the \<cloud\> namespace to your application context files, you need to de
 
 #### \<cloud:data-source\>
 The \<cloud:data-source\> element provides a convenient way to configure the JDBC DataSource for your Spring application.
-Basic attributes:
-id – defaults to service name
-service-name – only needed if you have multiple relational database services bound to the app
+
+##### Basic attributes
+- id – defaults to service name
+- service-name – only needed if you have multiple relational database services bound to the app
 
 A simple example DataSource configuration to be injected into a JdbcTemplate would look like this, with the only attribute used specifying the id of the datasource bean.
 ```xml
@@ -118,6 +119,7 @@ There are sub-elements that can be used to configure specific connections and po
 <td>Either the maximum number of connections in the pool or a range specifying minimum and maximum size separated by a dash.</td>
 <td>int</td>
 <td>Uses the default settings of the Apache Commons Pool which are 0 for min and 8 for max size</td>
+</tr>
 <tr>
 <td>max-wait-time</td>	
 <td>The maximum number of milliseconds that the pool will wait (when there are no available connections) for a connection to be returned before throwing an exception. -1 indicates unlimited wait.</td>
@@ -129,10 +131,11 @@ There are sub-elements that can be used to configure specific connections and po
 
 #### \<cloud:mongo-db-factory\>
 The \<cloud:mongo-db-factory\> element provides a convenient way to configure the MongoDB connection factory for your Spring application.
-Basic attributes:
-id – defaults to service name
-service-name – only needed if you have multiple MongoDB services bound to the app
-write-concern – the WriteConcern to use for all DB connections created (NONE, NORMAL, SAFE, FSYNC_SAFE). If this is not specified then no WriteConcern will be set for the DB connections and all writes will default to NORMAL
+
+##### Basic attributes:
+- id – defaults to service name
+- service-name – only needed if you have multiple MongoDB services bound to the app
+- write-concern – the WriteConcern to use for all DB connections created (NONE, NORMAL, SAFE, FSYNC_SAFE). If this is not specified then no WriteConcern will be set for the DB connections and all writes will default to NORMAL
 
 The values for the write-concern attribute correspond to the values available in the com.mongodb.WriteConcern class.
 
@@ -199,9 +202,10 @@ There are some advanced configuration attributes that are available using the \<
 
 #### \<cloud:redis-connection-factory\>
 The \<cloud:redis-connection-factory\> element provides a convenient way to configure the Redis connection factory for your Spring application.
-Available attributes:
-id – defaults to service name
-service-name – only needed if you have multiple Redis services bound to the app
+
+##### Basic attributes:
+- id – defaults to service name
+- service-name – only needed if you have multiple Redis services bound to the app
 
 A simple example RedisConnectionFactory configuration to be injected into a RedisTemplate would look like this, with the only attribute used specifying the id of the redisConnectionFactory bean.
 ```xml
@@ -240,9 +244,10 @@ The advanced configuration attributes that are available via the \<cloud:pool\> 
 
 #### \<cloud:rabbit-connection-factory\>
 The \<cloud:rabbit-connection-factory\> element provides a convenient way to configure the RabbitMQ connection factory for your Spring application.
-Available attributes:
-id – defaults to service name
-service-name – only needed if you have multiple RabbitMQ services bound to the app
+
+##### Basic Attributes
+- id – defaults to service name
+- service-name – only needed if you have multiple RabbitMQ services bound to the app
 
 A simple example RabbitConnectionFactory configuration to be injected into a RabbitTemplate would look like this, with the only attribute used specifying the id of the rabbitConnectionFactory bean. This example uses the <rabbit> namespace in addition to the <cloud> one.
 ```xml
