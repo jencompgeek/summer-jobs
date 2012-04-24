@@ -63,7 +63,7 @@ class SummerJobsApp < Sinatra::Base
   end
 
   before do
-    @appid = ENV['facebook_app_id']
+    @appid = ENV['FACEBOOK_APP_ID']
     @description = "A new call-to-action for businesses, non-profits, and government to provide pathways to employment for low-income and disconnected youth in the summer of 2012"
     @context = DOL::DataContext.new('http://api.dol.gov', ENV['USDOL_TOKEN'], ENV['USDOL_SECRET'])
     @dol_request = DOL::DataRequest.new(@context)
