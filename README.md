@@ -24,8 +24,28 @@ You will also need to have the Spring Framework Milestone Repository in your pom
   </repository>
 ```
 
-## Using the <cloud> namespace in Spring applications
-To add the <cloud> namespace to your application context files, you need to declare the namespace (line 5) and also provide the schema location (line 8). Once this is declared, you can use the <cloud> namespace elements(line 10). Here is the complete example:
+## Getting environment information using Java API
+The [Java API](http://cf-runtime-api.cloudfoundry.com) includes a class called CloudEnvironment, which provides a Java object model from the JSON in the VCAP_SERVICES environment variable.  This format makes it easier to provide service connection info to your code that creates clients.
+
+Here is an example that retrieves information about a Mongo service named "my-mongo"
+
+```java
+Cloud Environment environment= new CloudEnvironment(); 
+MongoServiceInfo service = environment.getServiceInfo("my-mongo",MongoServiceInfo.class);
+System.out.println("Mongo available at host: " + service.getHost() + " and port: " + service.getPort());
+```
+
+## Connecting to services using Java API
+If you don't care to use the cloud namespace, you can still take advantage of the [Java API](http://cf-runtime-api.cloudfoundry.com) to make programmatic service connections.  See the javadoc for all extensions of [AbstractServiceCreator].  The service creators for Mongo and Redis require Spring Data.  The RabbitServiceCreator requires Spring AMQP.  Service creators for MySQL and PostgreSQL will create a Commons DBCP DataSource if the libraries are present, else they will attempt to create a Tomcat DataSource.
+
+Here is an example that creates a connection to a Mongo service named "my-mongo":
+```java
+CloudEnvironment environment = new CloudEnvironment();
+MongoDbFactory mongo = new MongoServiceCreator().createService(environment.getService(MongoServiceInfo.class))
+```
+
+## Using the \<cloud\> namespace in Spring applications
+To add the \<cloud\> namespace to your application context files, you need to declare the namespace (line 5) and also provide the schema location (line 8). Once this is declared, you can use the \<cloud\> namespace elements(line 10). Here is the complete example:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -64,11 +84,24 @@ A simple example DataSource configuration to be injected into a JdbcTemplate wou
 </bean>
 ```
 
-There are sub-elements that can be used to configure specific connections and pool settings. The <cloud:data-source> namespace element supports the most commonly used configuration options via the <cloud:connection> and <cloud:pool> sub-elements. The supported options are explained below:
+There are sub-elements that can be used to configure specific connections and pool settings. The \<cloud:data-source\> namespace element supports the most commonly used configuration options via the \<cloud:connection\> and \<cloud:pool\> sub-elements. The supported options are explained below:
 
-<cloud:connection> options
-Namespace attribute	Description	Type
-properties	The connection properties that will be sent to the JDBC driver when establishing new connections. Format of the string must be "propertyName=property;"	string
+##### <cloud:connection> options
+
+<html>
+<table>
+<tr>
+<th>Namespace attribute</th>
+<th>Description</th>
+<th>Type</th>
+</tr>
+<tr>
+<td>properties</td>	
+<td>The connection properties that will be sent to the JDBC driver when establishing new connections. Format of the string must be "propertyName=property;"</td>
+<td>string</td>
+</tr>
+</table>
+</html>
 
 <cloud:pool> options
 Namespace attribute	Description	Type	Default
@@ -166,21 +199,3 @@ Available attributes:
 id – the name of the Properties bean
 The <cloud:properties> element exposes basic information about services that can be consumed with Spring’s property placeholder support. The properties exposed match those automatically enabled for a Spring 3.1 application.
 
-## Getting environment information using Java API
-The [Java API](http://cf-runtime-api.cloudfoundry.com) includes a class called CloudEnvironment, which provides a Java object model from the JSON in the VCAP_SERVICES environment variable.  This format makes it easier to provide service connection info to your code that creates clients.
-
-Here is an example that retrieves information about all the Mongo services bound to the application
-
-```java
-Cloud Environment environment= new CloudEnvironment(); 
-TODO
-```
-
-## Connecting to services using Java API
-If you don't care to use the cloud namespace, you can still take advantage of the [Java API](http://cf-runtime-api.cloudfoundry.com) to make programmatic service connections.  See the javadoc for all extensions of [AbstractServiceCreator].  The service creators for Mongo and Redis require Spring Data.  The RabbitServiceCreator requires Spring AMQP.  Service creators for MySQL and PostgreSQL TODO
-
-Here is an example that creates a connection to a Mongo service named "my-mongo":
-```java
-CloudEnvironment environment = new CloudEnvironment();
-MongoDbFactory mongo = new MongoServiceCreator().createService(environment.getService(MongoServiceInfo.class))
-```
